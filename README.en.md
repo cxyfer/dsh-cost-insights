@@ -45,7 +45,7 @@ In **More → About**, click the version seven times to export a sanitized diagn
 
 ## Compatibility
 
-- DeepSeek Harness `>=0.1.0-rc.7 <0.2.0`
+- DeepSeek Harness `>=0.1.0-rc.7 <0.2.0 || 0.2.0-rc.2`
 - Node.js `^22.19.0 || >=24.0.0`
 - DSH web client
 
@@ -62,6 +62,11 @@ Network synchronization is limited to the pricing, exchange-rate, and balance en
 declared in `package.json`. Diagnostic exports remove credentials, prompts, response text,
 and local database contents. Security concerns can be reported through GitHub's private
 vulnerability reporting.
+
+## Local changes and maintenance
+
+See the [maintenance notes](docs/local-improvements.md) for the DSH compatibility fix,
+separate cache metrics, and date controls.
 
 ## License
 
