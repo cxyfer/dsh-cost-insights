@@ -1,5 +1,12 @@
 # 更新日志
 
+## 1.0.1-dsh02.4 - 2026-10-21
+
+- 放宽 DSH 兼容范围为 `>=0.1.0-rc.7 <0.3.0-0`，覆盖 DSH `0.2.1-rc.2` 及后续 0.2.x 版本；`engines.dsh`、`dshhub.compatibility.dsh` 与 peer 依赖共用同一范围。
+- 适配 DSH `0.2.1-rc.2` 的账号菜单式设置入口：点击侧栏“今日费用”可直接打开“设置 → 用量与费用”，同时保留旧版对话框入口。
+- 移除 0.2.x 已不再提供的 `@deepseek-ai/dsh-client-runtime` 客户端注入项。
+- 版本检查改为跟随 `package.json`，并校验 DSH 与 Node 兼容范围在各处元数据中保持一致。
+
 ## 1.0.1-dsh02.3 - 2026-10-18
 
 - 修正 host 与 browser 的 Typert strict codec，支持 DSH `0.2.0-rc.2`。
