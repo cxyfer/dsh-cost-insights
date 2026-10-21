@@ -1,6 +1,6 @@
 {
   "name": "dsh-cost-insights",
-  "version": "1.0.1-dsh02.4",
+  "version": "1.0.1-dsh02.5",
   "private": true,
   "description": "Auditable usage, cost, token, cache, balance and pricing analytics for DeepSeek Harness.",
   "type": "module",
@@ -94,11 +94,12 @@
     "url": "https://github.com/elviass/dsh-cost-insights/issues"
   },
   "scripts": {
-    "check": "node scripts/check-release.mjs && node --check lib/index.js && node --check lib/store.js && node --check lib/pricing.js && node --check lib/providers.js && node --check lib/validation.js && node --check lib/typert.host.js && node --check lib/client.js",
+    "check": "node scripts/check-release.mjs && node --check lib/index.js && node --check lib/store.js && node --check lib/pricing.js && node --check lib/providers.js && node --check lib/validation.js && node --check lib/typert.host.js && node --check lib/client.js && node --check scripts/backfill-usage.mjs",
     "test": "node --test test/*.test.js",
     "test:coverage": "node --experimental-test-coverage --test test/*.test.js",
     "test:ui": "node test/ui-smoke.cjs",
     "test:live": "node scripts/live-sync-smoke.mjs",
+    "backfill:usage": "node scripts/backfill-usage.mjs",
     "release:build": "node scripts/build-release.mjs",
     "release:verify": "node scripts/verify-package.mjs"
   },

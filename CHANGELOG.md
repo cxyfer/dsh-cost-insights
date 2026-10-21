@@ -1,5 +1,11 @@
 # 更新日志
 
+## 1.0.1-dsh02.5 - 2026-10-21
+
+- 内置 `cline-pass/deepseek-v4.1-flash-1017` 定价：USD 0.30/百万输入、0.006/百万缓存命中、0.30/百万缓存写入、1.20/百万输出（官方 1017 峰值价，Cline Pass 以 flat 计价）。
+- 新增 `scripts/backfill-usage.mjs`：可从本地 DSH session JSONL 补齐未入账调用，并按当前价格簿重算未定价记录；默认 dry-run，只有 `--apply` 才写入。
+- 回补脚本只读取本地 ledger 与 session transcript，不读取提示词、回复正文或凭据，也不会联网。
+
 ## 1.0.1-dsh02.4 - 2026-10-21
 
 - 放宽 DSH 兼容范围为 `>=0.1.0-rc.7 <0.3.0-0`，覆盖 DSH `0.2.1-rc.2` 及后续 0.2.x 版本；`engines.dsh`、`dshhub.compatibility.dsh` 与 peer 依赖共用同一范围。

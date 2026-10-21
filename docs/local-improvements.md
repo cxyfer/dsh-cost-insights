@@ -1,17 +1,38 @@
 # 本地修改与维护
 
-此分支在 `1.0.1` 的基础上整理本地修补，当前版本为 `1.0.1-dsh02.4`。运行中的
+此分支在 `1.0.1` 的基础上整理本地修补，当前版本为 `1.0.1-dsh02.5`。运行中的
 DSH profile 需要重新安装本版本后才会生效；clone、提交或修改源码不会变更启动程序、
 profile 配置或账本。
 
-从本仓库构建或取得 `dsh-cost-insights-1.0.1-dsh02.4.tgz` 后，安装到对应 profile：
+从本仓库构建或取得 `dsh-cost-insights-1.0.1-dsh02.5.tgz` 后，安装到对应 profile：
 
 ```console
-dsh plugin --profile web add ./dsh-cost-insights-1.0.1-dsh02.4.tgz
+dsh plugin --profile web add ./dsh-cost-insights-1.0.1-dsh02.5.tgz
 ```
 
 安装后重启 DSH。已有账本仍保存在 `storages/usage-insights/ledger.sqlite`，升级不会
 迁移或删除历史数据。
+
+## 1.0.1-dsh02.5 定价与回补
+
+- 内置 `cline-pass/deepseek-v4.1-flash-1017` 定价：USD 0.30/百万输入、
+  0.006/百万缓存命中、0.30/百万缓存写入、1.20/百万输出；Cline Pass 以 flat
+  峰值价记录，来源为公开的 1017 价格页。
+- 新增 `scripts/backfill-usage.mjs`。它默认只做 dry-run，加上 `--apply` 才会写账本；
+  可以从本地 session JSONL 补齐未入账调用，也可以重算 `priced=0` 的旧记录：
+
+  ```console
+  # 先预览
+  node scripts/backfill-usage.mjs --since 2026-10-21T00:00:00+08:00
+
+  # 补齐日志并重算未定价记录
+  node scripts/backfill-usage.mjs --logs --reprice --apply --since 2026-10-21T00:00:00+08:00
+  ```
+
+  脚本只读取 `DSH_HOME/storages/usage-insights/ledger.sqlite` 与
+  `DSH_HOME/sessions`，不读取提示词、回复正文或凭据，也不会联网；读取压缩
+  session 日志需要系统的 `zstd` 指令。可用 `--session`、`--model` 缩小范围。
+  写入前建议先备份 ledger。
 
 ## 1.0.1-dsh02.4 兼容性修正
 
@@ -39,3 +60,5 @@ dsh plugin --profile web add ./dsh-cost-insights-1.0.1-dsh02.4.tgz
 - 在独立临时 `DSH_HOME` 中安装本版本，使用 DSH `0.2.1-rc.2` 启动 Web 界面，
   验证 host 无兼容跳过警告、设置页可打开、侧栏“今日费用”可直接进入
   “设置 → 用量与费用”，且浏览器控制台无错误。
+- 回补脚本先在 ledger 副本上执行 `--apply`，确认插入数、重算数、无重复记录与
+  幂等性，再对实际 ledger 执行；执行前另存完整备份。

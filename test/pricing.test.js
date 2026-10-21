@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { calculateCost, isDeepSeekPeak, parseAnthropicPricingHtml, parseDeepSeekPricingHtml, parseGooglePricingHtml, parseOpenAiPricingHtml, resolvePrice } from '../lib/pricing.js'
+import { calculateCost, DEFAULT_PRICE_BOOK, isDeepSeekPeak, parseAnthropicPricingHtml, parseDeepSeekPricingHtml, parseGooglePricingHtml, parseOpenAiPricingHtml, resolvePrice } from '../lib/pricing.js'
 
 const entry = {
   provider: 'vendor',
@@ -24,6 +24,22 @@ test('price matching is exact or an explicit alias, never fuzzy', () => {
   assert.equal(resolvePrice(book, 'vendor', 'model-alias').matchedBy, 'alias')
   assert.equal(resolvePrice(book, 'vendor', 'model-exact-preview').matchedBy, 'unpriced')
   assert.equal(resolvePrice(book, 'vendor', 'MODEL-EXACT').matchedBy, 'exact')
+})
+
+test('bundled Cline Pass DeepSeek 1017 snapshot uses the published peak rates', () => {
+  const resolved = resolvePrice(DEFAULT_PRICE_BOOK, 'cline-pass', 'cline-pass/deepseek-v4.1-flash-1017')
+  assert.equal(resolved.matchedBy, 'exact')
+  assert.equal(resolved.tier, 'flat')
+  assert.equal(resolved.entry.currency, 'USD')
+  assert.equal(resolved.entry.input, 0.3)
+  assert.equal(resolved.entry.cacheRead, 0.006)
+  assert.equal(resolved.entry.output, 1.2)
+  const cost = calculateCost({ inputTokens: 1_000_000, cacheReadTokens: 1_000_000, outputTokens: 1_000_000, reasoningTokens: 400_000 }, resolved, 6.678020508247882)
+  assert.equal(cost.priced, true)
+  assert.equal(cost.native, 1.506)
+  assert.equal(cost.usd, 1.506)
+  assert.equal(Math.abs(cost.cny - 1.506 * 6.678020508247882) < 1e-12, true)
+  assert.equal(resolvePrice(DEFAULT_PRICE_BOOK, 'cline-pass', 'deepseek-v4.1-flash-1017').matchedBy, 'alias')
 })
 
 test('reasoning tokens are not double-counted inside output tokens', () => {
